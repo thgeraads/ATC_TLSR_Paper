@@ -8,7 +8,7 @@
 #include "stack/ble/ble.h"
 #include "vendor/common/blt_common.h"
 #include "ota.h"
-
+#include "led.h"
 #include "ble.h"
 #include "cmd_parser.h"
 #include "flash.h"
@@ -59,6 +59,9 @@ _attribute_ram_code_ void ble_disconnect_callback(uint8_t e, uint8_t *p, int n)
 {
 	ble_connected = 0;
 	ota_started = 0;
+    set_led_color("red");
+    WaitMs(200);
+    set_led_color("off");
 	printf("BLE disconnected\r\n");
 }
 
@@ -71,6 +74,9 @@ _attribute_ram_code_ void ble_connect_callback(uint8_t e, uint8_t *p, int n)
 {
 	ble_connected = 1;
 	ota_started = 0;
+    set_led_color("green");
+    WaitMs(200);
+    set_led_color("off");
 	ble_set_connection_speed(200);
 	printf("BLE connected\r\n");
 }

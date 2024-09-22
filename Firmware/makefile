@@ -78,9 +78,11 @@ endif
 LST_FILE := $(OUT_PATH)/$(PROJECT_NAME).lst
 BIN_FILE := $(OUT_PATH)/../$(PROJECT_NAME).bin
 ELF_FILE := $(OUT_PATH)/$(PROJECT_NAME).elf
+ZIP_FILE := $(OUT_PATH)/../$(PROJECT_NAME)_src.zip  # Define the .zip file path
 
 # All Target
 all: chmod_all pre-build main-build
+
 # Main-build Target
 main-build: $(ELF_FILE) secondary-outputs
 
@@ -104,6 +106,12 @@ $(BIN_FILE): $(ELF_FILE)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+$(ZIP_FILE):
+	@echo 'Creating ZIP archive with source code'
+	@zip -r $(ZIP_FILE) $(PROJECT_PATH) $(PROJECT_PATH_STATIC)
+	@echo 'Finished creating: $@'
+	@echo ' '
+
 sizedummy: $(ELF_FILE)
 	@echo 'Invoking: Print Size'
 	$(TC32_COMPILER_PATH)tc32-elf-size -t $(ELF_FILE)
@@ -111,7 +119,7 @@ sizedummy: $(ELF_FILE)
 	@echo ' '
 
 clean:
-	-$(WINDOWS_PREFIX)rm $(FLASH_IMAGE) $(ELFS) $(OBJS) $(LST) $(ELF_FILE) $(BIN_FILE) $(LST_FILE)
+	-$(WINDOWS_PREFIX)rm $(FLASH_IMAGE) $(ELFS) $(OBJS) $(LST) $(ELF_FILE) $(BIN_FILE) $(LST_FILE) $(ZIP_FILE)
 	-@echo ' '
 
 pre-build:
@@ -122,7 +130,7 @@ chmod_all:
 	-@$(LINUX_CHMOD)
 	-@echo 'chmod_all'
 
-secondary-outputs: $(BIN_FILE) $(LST_FILE) sizedummy
+secondary-outputs: $(BIN_FILE) $(LST_FILE) $(ZIP_FILE) sizedummy
 
 .PHONY: all clean
-.SECONDARY: main-build 
+.SECONDARY: main-build
